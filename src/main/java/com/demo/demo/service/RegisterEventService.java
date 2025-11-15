@@ -10,7 +10,7 @@ import com.demo.demo.repository.AuthenticationRepository;
 import com.demo.demo.repository.EventRepository;
 import com.demo.demo.repository.RegisterRepository;
 import jakarta.transaction.Transactional;
-import org.apache.coyote.BadRequestException;
+import com.demo.demo.exception.exceptions.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,7 @@ public class RegisterEventService {
 
 
     @Transactional
-    public RegisterResponse registerForEvent(RegisterRequest requestModel) throws BadRequestException {
+    public RegisterResponse registerForEvent(RegisterRequest requestModel)  {
         // 1. Check for duplicate registration
         if(registerRepository.existsByAccountIdAndEventId(requestModel.getAccountId(), requestModel.getEventId())) {
             throw new BadRequestException("Account is already registered for this event.");
@@ -43,11 +43,11 @@ public class RegisterEventService {
                 .orElseThrow(() -> new BadRequestException("Account not found with id: " + requestModel.getAccountId()));
 
         Event event = eventRepository.findById(requestModel.getEventId())
-                .orElseThrow(() -> new com.demo.demo.exception.exceptions.BadRequestException("Event not found with id: " + requestModel.getEventId()));
+                .orElseThrow(() -> new BadRequestException("Event not found with id: " + requestModel.getEventId()));
 
         // 3. Business logic validation
         if (event.getStatus() == EventStatus.CANCELLED || event.getStatus() == EventStatus.COMPLETED) {
-            throw new com.demo.demo.exception.exceptions.BadRequestException("Cannot register for an event that is cancelled or completed.");
+            throw new BadRequestException("Cannot register for an event that is cancelled or completed.");
         }
 
         // 4. Create and save the new registration

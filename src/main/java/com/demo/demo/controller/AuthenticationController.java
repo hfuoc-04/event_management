@@ -25,7 +25,7 @@ public class AuthenticationController {
 
     @PostMapping("/api/register")
     // Thay đổi Account thành RegisterAccountRequest
-    // Thêm @Valid để các annotation validation trong DTO được kiểm tra
+    // Thêm @Valid để các annotation validation trong Model được kiểm tra
     public ResponseEntity<RegisterAccountResponse> register(@Valid @RequestBody RegisterAccountRequest registerRequest){
         RegisterAccountResponse response = authenticationService.register(registerRequest);
         return ResponseEntity.ok(response);
