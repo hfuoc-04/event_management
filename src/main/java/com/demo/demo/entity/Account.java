@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 
@@ -22,6 +23,7 @@ public class Account implements UserDetails {
     public String phone;
     public String password;
     public String fullName;
+    Date dateOfBirth;
     String image;
 
 
@@ -46,9 +48,9 @@ public class Account implements UserDetails {
         return this.email;
     }
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Register> registers;
 
-    @OneToOne(mappedBy = "account")
-    Wallet wallet;
+
+
 }

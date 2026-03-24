@@ -14,4 +14,5 @@ public class EventRequest {
     private EventStatus status;
     private Date startTime;
     long categoryId;
+    private String image;
 }

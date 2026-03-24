@@ -14,23 +14,27 @@ import java.util.List;
 public class Register {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public long id;
-    Date checkInTime;
+    private long id;
 
-    @ElementCollection(fetch = FetchType.LAZY) // LAZY is best practice for collections
+    // --- QUAN TRỌNG: Định nghĩa kiểu lưu trữ thời gian ---
+    @Column(name = "check_in_time")
+    @Temporal(TemporalType.TIMESTAMP) // Lưu cả ngày và giờ
+    private Date checkInTime;
+
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(
-            name = "register_image", // Name of the table that will store the tags
-            joinColumns = @JoinColumn(name = "register_id") // Column that links back to the Event
+            name = "register_image",
+            joinColumns = @JoinColumn(name = "register_id")
     )
-    @Column(name = "images", nullable = false) // Name of the column that will store the actual string tag
-    private List<String> images = new ArrayList<>(); // IMPORTANT: Always initialize collections!
+    @Column(name = "images", nullable = false)
+    private List<String> images = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "account_id")
-    Account account;
+    private Account account;
 
     @ManyToOne
     @JoinColumn(name = "event_id")
-    Event event;
+    private Event event;
 
 }

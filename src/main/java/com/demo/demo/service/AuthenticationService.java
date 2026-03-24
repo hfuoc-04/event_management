@@ -3,12 +3,15 @@ package com.demo.demo.service;
 import com.demo.demo.entity.Account;
 import com.demo.demo.entity.Role;
 import com.demo.demo.exception.exceptions.AuthenticationException;
+import com.demo.demo.exception.exceptions.BadRequestException;
 import com.demo.demo.model.reponse.AccountResponse;
 import com.demo.demo.model.reponse.RegisterAccountResponse;
 import com.demo.demo.model.request.EmailDetailRequest;
 import com.demo.demo.model.request.LoginRequest;
 import com.demo.demo.model.request.RegisterAccountRequest;
+import com.demo.demo.model.request.UpdateFaceRequest;
 import com.demo.demo.repository.AuthenticationRepository;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -45,7 +48,7 @@ public class AuthenticationService implements UserDetailsService {
 
 
     public RegisterAccountResponse register(RegisterAccountRequest registerRequest) {
-        // 1. Chuyển đổi từ RegisterAccountRequest DTO sang Account entity
+        // 1. Chuyển đổi từ RegisterAccountRequest Model sang Account entity
         Account account = modelMapper.map(registerRequest, Account.class);
 
         // 2. Thiết lập các giá trị mặc định mà server quản lý
@@ -65,7 +68,7 @@ public class AuthenticationService implements UserDetailsService {
         RegisterAccountResponse response = modelMapper.map(newAccount, RegisterAccountResponse.class);
         response.setMessage("Account created successfully for " + newAccount.getEmail());
 
-        // 6. Trả về DTO thay vì entity
+        // 6. Trả về Model thay vì entity
         return response;
     }
 
@@ -97,5 +100,23 @@ public class AuthenticationService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return authenticationRepository.findAccountByEmail(email);
+    }
+    @Transactional
+    public Account updateAndRegisterFace(UpdateFaceRequest updateFaceRequest) {
+        Account account = authenticationRepository.findAccountByEmail(updateFaceRequest.getEmail());
+        if (account == null) {
+            throw new BadRequestException("Account not found with email: " + updateFaceRequest.getEmail());
+        }
+
+        // The field name in the DTO has changed
+        account.setImage(updateFaceRequest.getFaceImageUrl());
+
+        Account updatedAccount = authenticationRepository.save(account);
+        System.out.println("Saved new face image URL for " + account.getEmail() + " to the database.");
+
+        // MODIFIED: Call the new method for handling URLs
+
+
+        return updatedAccount;
     }
 }

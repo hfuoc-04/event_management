@@ -37,7 +37,8 @@ public class Filter extends OncePerRequestFilter {
     // Format: "METHOD:/api/path"
     private static final List<String> PUBLIC_API = List.of(
             "POST:/api/register",
-            "POST:/api/login"
+            "POST:/api/login",
+            "PUT:/api/register-event/check-in/**"
     );
 
     private final AntPathMatcher pathMatcher = new AntPathMatcher();

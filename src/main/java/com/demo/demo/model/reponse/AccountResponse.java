@@ -13,4 +13,5 @@ public class AccountResponse {
     public Gender gender;
     public Role role;
     public String token;
+    public String image;
 }

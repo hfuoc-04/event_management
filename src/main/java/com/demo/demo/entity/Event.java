@@ -20,14 +20,15 @@ public class Event {
     String location;
     EventStatus status;
     Date startTime;
+    @Column(name = "image_url")
+    private String image;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     Category category;
 
-    @OneToMany(mappedBy = "event")
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Register> registers;
 
-    @OneToMany(mappedBy = "event")
-    List<Store> stores;
+
 }

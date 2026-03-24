@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 @Service
@@ -27,18 +29,22 @@ public class TokenService {
     }
 
     public String generateToken(Account account) {
-        String token =
-                // create object of JWT
-                Jwts.builder().
-                        //subject of token
-                                subject(account.getEmail()).
-                        // time Create Token
-                                issuedAt(new Date(System.currentTimeMillis()))
-                        // Time exprire of Token
-                        .expiration(new Date(System.currentTimeMillis()+24*60*60*1000))
-                        //
-                        .signWith(getSigninKey())
-                        .compact();
+        // 1. Tạo Map chứa thông tin thêm
+        Map<String, Object> claims = new HashMap<>();
+
+        // 2. Thêm Role vào claims.
+        // Dùng .name() để chuyển Enum ADMIN thành chữ "ADMIN"
+        if (account.getRole() != null) {
+            claims.put("role", account.getRole().name());
+        }
+
+        String token = Jwts.builder()
+                .claims(claims) // Đưa claims (có chứa role) vào token
+                .subject(account.getEmail())
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
+                .signWith(getSigninKey())
+                .compact();
         return token;
     }
 

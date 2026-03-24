@@ -33,7 +33,8 @@ public class EventService {
                 .orElseThrow(() -> new BadRequestException("Category not found with id: " + eventModel.getCategoryId()));
 
         Event event = toEntity(eventModel);
-        event.setCategory(category); // Associate the category with the event
+        event.setCategory(category);
+        // Associate the category with the event
 
         // Set a default status for new events
         event.setStatus(EventStatus.UPCOMING);
@@ -64,6 +65,7 @@ public class EventService {
         event.setDescription(eventDetails.getDescription());
         event.setLocation(eventDetails.getLocation());
         event.setStartTime(eventDetails.getStartTime());
+        event.setImage(eventDetails.getImage());
 
         if (eventDetails.getStatus() != null) {
             event.setStatus(eventDetails.getStatus());
@@ -99,6 +101,7 @@ public class EventService {
         model.setLocation(event.getLocation());
         model.setStatus(event.getStatus());
         model.setStartTime(event.getStartTime());
+        model.setImage(event.getImage());
         // Map the category ID from the entity to the Model
         if (event.getCategory() != null) {
             model.setCategoryId(event.getCategory().getId());
@@ -114,6 +117,7 @@ public class EventService {
         event.setLocation(model.getLocation());
         event.setStatus(model.getStatus());
         event.setStartTime(model.getStartTime());
+        event.setImage(model.getImage());
         return event;
     }
 }
